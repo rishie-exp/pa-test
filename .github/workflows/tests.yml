@@ -14,15 +14,13 @@ on:
       - main # Targets the PRs aimed at main
 
 jobs:
-  test:
+  test:                # This is the job name
     runs-on: ubuntu-latest
-        steps:
-      # Step 1: Check out the code from the repository
+    steps:             # Must be indented 2 spaces under 'test'
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Step 2: Set up the runtime environment
-      - name: Set up Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
