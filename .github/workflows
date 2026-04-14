@@ -1,0 +1,36 @@
+name: Standard CI Tests
+
+# Trigger events for the workflow
+on:
+  # Runs on every push to any branch (covers commits & branch creation)
+  push:
+    branches:
+      - '**'
+  
+  # Runs on Pull Request activities
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main # Targets the PRs aimed at main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the code from the repository
+      - name: Checkout Code
+        uses: [actions/checkout@v4](https://github.com)
+
+      # Step 2: Set up the runtime environment (e.g., Node.js)
+      - name: Setup Node.js
+        uses: [actions/setup-node@v4](https://github.com)
+        with:
+          node-version: '20'
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: npm ci
+
+      # Step 4: Run your test suite
+      - name: Run Tests
+        run: npm test
