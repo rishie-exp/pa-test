@@ -16,16 +16,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps:
+        steps:
       # Step 1: Check out the code from the repository
       - name: Checkout Code
-        uses: [actions/checkout@v4](https://github.com)
+        uses: actions/checkout@v4
 
-      # Step 2: Set up the runtime environment (e.g., Node.js)
-      - name: Setup Node.js
-        uses: [actions/setup-node@v4](https://github.com)
+      # Step 2: Set up the runtime environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+
 
       # Step 3: Install dependencies
       - name: Install Dependencies
