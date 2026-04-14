@@ -1,11 +1,11 @@
 name: Event Trigger Test
 
 on:
-  create:          # Triggers on branch creation
-  push:            # Triggers on commits and merges
+  create:
+  push:
     branches:
       - '**'
-  pull_request:    # Triggers on PR activity
+  pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -17,7 +17,6 @@ jobs:
       - name: Commit Job
         run: |
           echo "Trigger: This is a standard commit push."
-          echo "Status: Failing on purpose for testing..."
           exit 1
 
   # 2. Runs only when a new branch is created
