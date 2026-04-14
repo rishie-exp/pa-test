@@ -1,35 +1,39 @@
-name: Standard CI Tests
+name: Event Trigger Test
 
-# Trigger events for the workflow
 on:
-  # Runs on every push to any branch (covers commits & branch creation)
-  push:
-    branches:
-      - '**'
-  
-  # Runs on Pull Request activities
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main # Targets the PRs aimed at main
+  create:          # Branch creation
+  push:            # Commits & PR Merges
+  pull_request:    # PR opened/updated
+    types: [opened, synchronize]
 
 jobs:
-  test:                # This is the job name
+  # 1. Runs on every commit (will FAIL for testing)
+  on-commit:
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
-    steps:             # Must be indented 2 spaces under 'test'
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    steps:
+      - run: |
+          echo "Test: This job triggers on every commit."
+          echo "Purposefully failing this job..."
+          exit 1
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+  # 2. Runs only when a new branch is created
+  on-branch-create:
+    if: github.event_name == 'create' && github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Success: A new branch was created!"
 
+  # 3. Runs when a PR is opened or updated
+  on-pr-open:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Success: This PR is now open or has new commits."
 
-      # Step 3: Install dependencies
-      - name: Install Dependencies
-        run: npm ci
-
-      # Step 4: Run your test suite
-      - name: Run Tests
-        run: npm test
+  # 4. Runs only when a PR is merged (Push to main)
+  on-pr-merge:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Success: Code was merged into the main branch!"
