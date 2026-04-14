@@ -9,7 +9,6 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  # 1. Runs on every commit (Configured to FAIL)
   on-commit:
     if: github.event_name == 'push' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -19,7 +18,6 @@ jobs:
           echo "Trigger: This is a standard commit push."
           exit 1
 
-  # 2. Runs only when a new branch is created
   on-branch-create:
     if: github.event_name == 'create' && github.event.ref_type == 'branch'
     runs-on: ubuntu-latest
@@ -27,7 +25,6 @@ jobs:
       - name: Branch Create Job
         run: echo "Success: A new branch was detected!"
 
-  # 3. Runs when a PR is opened or updated
   on-pr-open:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -35,7 +32,6 @@ jobs:
       - name: PR Open Job
         run: echo "Success: Pull Request is active."
 
-  # 4. Runs only when code hits the main branch (PR Merge)
   on-pr-merge:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
