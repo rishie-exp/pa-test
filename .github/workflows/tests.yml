@@ -1,20 +1,23 @@
 name: Event Trigger Test
 
 on:
-  create:          # Branch creation
-  push:            # Commits & PR Merges
-  pull_request:    # PR opened/updated
-    types: [opened, synchronize]
+  create:          # Triggers on branch creation
+  push:            # Triggers on commits and merges
+    branches:
+      - '**'
+  pull_request:    # Triggers on PR activity
+    types: [opened, synchronize, reopened]
 
 jobs:
-  # 1. Runs on every commit (will FAIL for testing)
+  # 1. Runs on every commit (Configured to FAIL)
   on-commit:
     if: github.event_name == 'push' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "Test: This job triggers on every commit."
-          echo "Purposefully failing this job..."
+      - name: Commit Job
+        run: |
+          echo "Trigger: This is a standard commit push."
+          echo "Status: Failing on purpose for testing..."
           exit 1
 
   # 2. Runs only when a new branch is created
@@ -22,18 +25,21 @@ jobs:
     if: github.event_name == 'create' && github.event.ref_type == 'branch'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Success: A new branch was created!"
+      - name: Branch Create Job
+        run: echo "Success: A new branch was detected!"
 
   # 3. Runs when a PR is opened or updated
   on-pr-open:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Success: This PR is now open or has new commits."
+      - name: PR Open Job
+        run: echo "Success: Pull Request is active."
 
-  # 4. Runs only when a PR is merged (Push to main)
+  # 4. Runs only when code hits the main branch (PR Merge)
   on-pr-merge:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Success: Code was merged into the main branch!"
+      - name: PR Merge Job
+        run: echo "Success: PR was merged into main!"
